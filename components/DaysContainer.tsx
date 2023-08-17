@@ -1,7 +1,9 @@
 import { ObjectId } from "mongoose";
-import Days from "./Days";
-
 import { useEffect, useState } from "react";
+import { useSnapshot } from "valtio/react";
+
+import Days from "./Days";
+import state from "./state";
 
 export default function DaysContainer() {
 
@@ -20,6 +22,7 @@ export default function DaysContainer() {
     let day: Date
     const [array, setArray] = useState<arrayOfDays[]>([])
     let found: boolean = false
+    const snap = useSnapshot(state)
 
 
     // fetching tasks 
@@ -31,9 +34,10 @@ export default function DaysContainer() {
             }
             const data = await response.json()
             setArray(data)
+            state.refresh=false
         }
         fetchTasks()
-    }, [])
+    }, [snap.refresh])
 
     //check if two dates are same
     function areDatesEqual(date1: Date, date2: Date): boolean {
