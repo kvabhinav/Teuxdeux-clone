@@ -1,9 +1,10 @@
 import Lines from "./Lines";
 import InsertTask from "./InsertTask";
-import Tasks from "./Tasks";
+import Tasks, { itemChild } from "./Tasks";
 
 import { DragEvent, useRef, useState } from 'react'
 import state from "./state";
+import { draggedItem } from "./Tasks";
 
 type daysProps = {
     date: Date,
@@ -51,7 +52,6 @@ export default function Days(props: daysProps) {
         const date2 = new Date(prevDate)
         date2.setHours(0, 0, 0, 0)
 
-        console.log(index2)
 
         //function for checking if two dates are same
         function areDatesEqual(date1: Date, date2: Date): boolean {
@@ -64,8 +64,27 @@ export default function Days(props: daysProps) {
 
 
         if (areDatesEqual(date1,date2)) {
-            
+            draggedItem.classList.remove('void')
+            for(let  i=0;i<itemChild.length;i++){
+                setTimeout(() => {
+                    itemChild[i].classList.remove('hidden')
+                    
+                }, 0);
+            }
+            state.refresh=true
         } else {
+            
+            //resetting the void class and task 
+            for(let  i=0;i<itemChild.length;i++){
+                setTimeout(() => {
+                    itemChild[i].classList.remove('hidden')
+                    
+                }, 0);
+            }
+            if(draggedItem.classList.contains('void')){
+                draggedItem.classList.remove('void')
+            }
+            
             const res = await fetch('api/moveTasks', {
                 method: 'POST',
                 body: JSON.stringify({
